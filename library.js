@@ -153,11 +153,17 @@ async function main() {
     const montania1 = new Sphere(montaniaTextura, new Array(sphereTextureSize).fill(0), sphereQuality, true);
     montania1.scale(5, 5, 5);    
     montania1.translate(0, -5.5, 0);
-	modelosPlanetas.push(montania1)
+	modelosPlanetas.push(montania1);
 
 	const montania2 = new Sphere(montaniaTextura, generateSphereTexture(0.115, 0.245, 0.115, 0.245), sphereQuality, true);
-	montania2.scale(6, 5, 6);
+	montania2.scale(5.5, 5, 5.5);
 	montania2.translate(0, -5.5, 0);
+	modelosPlanetas.push(montania2);
+
+	const montania3 = new Sphere(montaniaTextura, generateSphereTexture(0.287, 0.388, 0.287, 0.388), sphereQuality, true);
+	montania3.scale(4.5, 5, 4.5);
+	montania3.translate(0, -5.5, 0);
+	//modelosPlanetas.push(montania3);
 
 	const gameSize = 16;
 	var planetas = new Array(gameSize);
@@ -179,7 +185,7 @@ async function main() {
 		var planetProbability = 0;
 		for(let i = 1; i < planetas.length; i++) {
 			planetProbability = Math.random();
-			if(planetProbability >= 0.4) planetas[i] = montania2;
+			if(planetProbability >= 0.4) planetas[i] = modelosPlanetas[Math.floor(Math.random()*1.5)];
 		}
 		while(planetas[posicionVictoria] == null) {
 			posicionVictoria = Math.floor(Math.random()*(planetas.length-1)) + 1
@@ -317,19 +323,14 @@ async function main() {
             if(cuentaSalto >= curva.length -1) {
                 salto = false;
 				if(direccionSalto == 1 | direccionSalto == -1) {
-					if((direccionSalto == 1 && Math.floor(posicionJugador/Math.sqrt(gameSize)) == Math.sqrt(gameSize)-1)
-					| (direccionSalto == -1 && Math.floor(posicionJugador/Math.sqrt(gameSize)) == 0)) {
+					if((direccionSalto == 1 && posicionJugador % Math.sqrt(gameSize) == Math.sqrt(gameSize)-1)
+					| (direccionSalto == -1 && posicionJugador % Math.sqrt(gameSize) == 0)) {
 						posicionJugador = -1;
 					} else {
 						posicionJugador += 1*direccionSalto;
 					}
 				} else if (direccionSalto == 2 | direccionSalto == -2) {
-					if((direccionSalto == -2 && posicionJugador % Math.sqrt(gameSize) == Math.sqrt(gameSize)-1)
-					| (direccionSalto == 2 && posicionJugador % Math.sqrt(gameSize) == 0)) {
-						posicionJugador = -1;
-					} else {
-						posicionJugador -= Math.sqrt(gameSize)*direccionSalto/2;
-					}
+					posicionJugador -= Math.sqrt(gameSize)*direccionSalto/2;
 				}
                 cuentaSalto = 0;
             }
