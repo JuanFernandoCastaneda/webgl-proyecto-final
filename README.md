@@ -1,10 +1,16 @@
 # Proyecto final
 
-Buenos días.
+Buenas :)
 
 No configuré que las texturas esperaran a que se cargaran para ponerse, entonces la primera vez va a aparecer una imagen en negro. Basta con reiniciar el Github Pages para que se vea correctamente.
 
 <img width="462" alt="image" src="https://user-images.githubusercontent.com/26715082/200184043-d767115f-a833-4494-96eb-bfae46e4bcc0.png">
+
+A continuación va un apartado con las features antiguas y después uno con las nuevas.
+
+[Features Nuevas](features-nuevas)
+
+## Features antiguas
 
 Features importantes de el proyecto es que por ejemplo todo tiene multitexturas. Si se mira el fragment shader se verá que se suman los valores de dos coordenadas distintas de texturas (si esto cuenta como prueba del trabajo que no entregué de multitexturas, lo agradecería x'd). 
 
@@ -30,6 +36,23 @@ En cuanto a las luces, hay una luna que ilumina una parte del escenario con la l
 
 <img width="455" alt="image" src="https://user-images.githubusercontent.com/26715082/200184693-050e7c65-4046-440f-b5cd-416b95d4538b.png">
 
+## Features nuevas
+
+Ahora hay un nuevo conjunto de instrucciones porque la escena se volvió un minijuego interactivo :D
+
+<img width="614" alt="image" src="https://user-images.githubusercontent.com/26715082/205944260-e6f1ac56-edf0-43d4-be97-00b16365a578.png">
+
+Como bien dicen las instrucciones, ahora el personaje se puede mover (y también mover la cámara). Pero con cuidado, pues si salta a un planeta que no exista, o fuera del sistema de planetas, pierde.
+
+El objetivo ahora es entregar un pedido que tu novia hizo. Tu novia es el personaje con camisa roja
+
+<img width="620" alt="image" src="https://user-images.githubusercontent.com/26715082/205944569-18536787-717e-42ba-83ab-2131f6b9565f.png">
+
+Como la organización de planetas se genera de forma aleatórea, habrá veces en que no será posible vencer el juego de forma convencional, y para eso se utilizará ¡el poder del amor! Con este podrás saltar incluso en mundos que no existen (pero te seguirás sin poder salir del sistema de planetas).
+
+<img width="612" alt="image" src="https://user-images.githubusercontent.com/26715082/205945047-11a16a43-aadc-4d3e-9ef2-24139f07cfaa.png">
 
 
-# webgl-proyecto-final
+
+
+
