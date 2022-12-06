@@ -1,4 +1,4 @@
-# webgl-proyecto3
+# Proyecto final
 
 Buenos días.
 
