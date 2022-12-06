@@ -2,13 +2,12 @@
 
 Buenas :)
 
-No configuré que las texturas esperaran a que se cargaran para ponerse, entonces la primera vez va a aparecer una imagen en negro. Basta con reiniciar el Github Pages para que se vea correctamente.
+No configuré que las texturas esperaran a que se cargaran para ponerse, entonces la primera vez va a aparecer una imagen en negro. Basta con reiniciar el Github Pages para que se vea correctamente. A continuación está la lista de features antiguas y la lista de features nuevas:
+
+* [Features antiguas](#features-antiguas)
+* [Features nuevas](#features-nuevas)
 
 <img width="462" alt="image" src="https://user-images.githubusercontent.com/26715082/200184043-d767115f-a833-4494-96eb-bfae46e4bcc0.png">
-
-A continuación va un apartado con las features antiguas y después uno con las nuevas.
-
-[Features Nuevas](features-nuevas)
 
 ## Features antiguas
 
@@ -51,6 +50,12 @@ El objetivo ahora es entregar un pedido que tu novia hizo. Tu novia es el person
 Como la organización de planetas se genera de forma aleatórea, habrá veces en que no será posible vencer el juego de forma convencional, y para eso se utilizará ¡el poder del amor! Con este podrás saltar incluso en mundos que no existen (pero te seguirás sin poder salir del sistema de planetas).
 
 <img width="612" alt="image" src="https://user-images.githubusercontent.com/26715082/205945047-11a16a43-aadc-4d3e-9ef2-24139f07cfaa.png">
+
+Una vez llegues a donde está tu novia, ganarás el juego :D
+
+<img width="659" alt="image" src="https://user-images.githubusercontent.com/26715082/205946050-00672355-d767-4212-9ff8-0f495e844a33.png">
+
+Si por alguna razón quieres reiniciar la configuración de planetas o del jugador, también tienes opción de hacerlo :)
 
 
 
