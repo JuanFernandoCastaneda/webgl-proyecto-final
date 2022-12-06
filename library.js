@@ -140,6 +140,7 @@ async function main() {
 
     const cielo = new Cube(generateCubeTexture(0.1, 0.602, 0.439, 0.945), new Array(48).fill(0), false);
     cielo.scale(100, 100, 100);
+	cielo.translate(25, 0, -20);
 
     const sun = new Sphere(generateSphereTexture(0.462, 0.52, 0.822, 0.801), new Array(sphereTextureSize).fill(1), sphereQuality, true);
     sun.scale(2, 2, 2);
@@ -147,10 +148,16 @@ async function main() {
     sunDirection = [14, 3, -8, 1];
     sunLight = [0.5, 0.5, 0.5];
 
+	const modelosPlanetas = []
     const montaniaTextura = generateSphereTexture(0.452, 0.022, 0.664, 0.224);
     const montania1 = new Sphere(montaniaTextura, new Array(sphereTextureSize).fill(0), sphereQuality, true);
     montania1.scale(5, 5, 5);    
     montania1.translate(0, -5.5, 0);
+	modelosPlanetas.push(montania1)
+
+	const montania2 = new Sphere(montaniaTextura, generateSphereTexture(0.115, 0.245, 0.115, 0.245), sphereQuality, true);
+	montania2.scale(6, 5, 6);
+	montania2.translate(0, -5.5, 0);
 
 	const gameSize = 16;
 	var planetas = new Array(gameSize);
@@ -164,6 +171,7 @@ async function main() {
 	function generatePlanets() {
 		cameraTranslation = [0, 0, 0];
 		cameraAngle = 0;
+		mWorld = mat4.create();
 		planetas = new Array(gameSize);
 		// Pusheamos el planeta inicial en el tablero.
 		planetas[0] = montania1;
@@ -171,13 +179,11 @@ async function main() {
 		var planetProbability = 0;
 		for(let i = 1; i < planetas.length; i++) {
 			planetProbability = Math.random();
-			if(planetProbability >= 0.5) planetas[i] = montania1;
+			if(planetProbability >= 0.4) planetas[i] = montania2;
 		}
 		while(planetas[posicionVictoria] == null) {
 			posicionVictoria = Math.floor(Math.random()*(planetas.length-1)) + 1
-			console.log(posicionVictoria);
 		}
-		console.log(posicionVictoria);
 	}
 
 	// Generamos el tablero.
@@ -206,62 +212,57 @@ async function main() {
     const cubo = new Persona(new Array(48).fill(1), texturasCamisetaHombre, true);
     cubo.animateLeftArm(Math.PI/2);
 
-	const mawia = new Persona(new Array(48).fill(1), texturasCamisetaHombre, true);
+	const mawia = new Persona(new Array(48).fill(1), generateCubeTexture(0.115, 0.245, 0.115, 0.245), true);
 
-	period = performance.now() / 50000 * 2 * Math.PI;
+	period = performance.now() / 20000 * 2 * Math.PI;
+
+    let salto = false;
+	let direccionSalto = 2;
+    let cuentaSalto = 0;
 
     document.addEventListener('keydown', function(event) {
         if(event.key == " ") {
-            salto = true;
+			if(!salto) {
+				direccionSalto = 0;
+            	salto = true;
+			}
         } else if(event.key == "r") {
-			generatePlanets();
+			if(!salto) generatePlanets();
 		} else if(event.key == "e") {
-			cameraAngle += period;
+			mat4.translate(mWorld, mWorld, [Math.floor(posicionJugador/Math.sqrt(gameSize))*separacionPlanetas, 0, -posicionJugador%Math.sqrt(gameSize)*separacionPlanetas]);
+			mat4.rotate(mWorld, mWorld, period, [0, 1, 0]);
+			mat4.translate(mWorld, mWorld, [-Math.floor(posicionJugador/Math.sqrt(gameSize))*separacionPlanetas, 0, posicionJugador%Math.sqrt(gameSize)*separacionPlanetas]);
 		} else if(event.key == "q") {
-			cameraAngle -= period;
+			mat4.translate(mWorld, mWorld, [Math.floor(posicionJugador/Math.sqrt(gameSize))*separacionPlanetas, 0, -posicionJugador%Math.sqrt(gameSize)*separacionPlanetas]);
+			mat4.rotate(mWorld, mWorld, -period, [0, 1, 0]);
+			mat4.translate(mWorld, mWorld, [-Math.floor(posicionJugador/Math.sqrt(gameSize))*separacionPlanetas, 0, posicionJugador%Math.sqrt(gameSize)*separacionPlanetas]);
 		} else if(event.key == "w") {
-			posicionJugador += 1;
-			cameraTranslation[2] += separacionPlanetas;
+			if(!salto) {
+				direccionSalto = 1;
+				salto = true;
+			}
 		} else if(event.key == "s") {
-			posicionJugador -= 1;
-			cameraTranslation[2] -= separacionPlanetas;
+			if(!salto) {
+				direccionSalto = -1;
+				salto = true;
+			}
 		} else if(event.key == "d") {
-			posicionJugador += Math.sqrt(gameSize);
-			cameraTranslation[0] -= separacionPlanetas;
+			if(!salto) {
+				direccionSalto = -2;
+				salto = true;
+			}
 		} else if(event.key == "a") {
-			posicionJugador -= Math.sqrt(gameSize);
-			cameraTranslation[0] += separacionPlanetas;
-		}
-		if(posicionJugador < 0 | posicionJugador >= planetas.length | planetas[posicionJugador] == null) {
-			alert("Moristej");
-			generatePlanets();
-		} else if(posicionJugador = posicionVictoria) {
-			console.log(posicionJugador, posicionVictoria);
-			alert("¡Ganaste!")
-			generatePlanets();
+			if(!salto) {
+				direccionSalto = 2;
+				salto = true;
+			}
 		}
     });
-
-    let salto = false;
-    let caida = false;
-    let cuentaSalto = 0;
-    const incrementoSalto = 0.1;
-    const saltoMax = 2;
 
     let reverseLeg = false;
     let legAngle = 0;
 
-
     const loop = () => {
-
-        // How much time the figure will take to rotate 360 degrees.
-        // Operating the matrix to rotate in the period, by the y axis.
-        // 1, 1, 0
-        mat4.rotate(yRotationMatrix, identityMatrix, cameraAngle, [0, 1, 0]);
-        mat4.rotate(xRotationMatrix, identityMatrix, 0, [1, 0, 0]);
-        mat4.mul(mWorld, yRotationMatrix, xRotationMatrix);
-
-		mat4.translate(mWorld, mWorld, cameraTranslation);
 
         // Setting up the color with which one's clears.
         gl.clearColor(0.75, 0.85, 0.8, 1.0);
@@ -280,23 +281,57 @@ async function main() {
 
         if(salto == true) {
             cuentaSalto += 1;
-            cubo.translate(0, 1-curva[cuentaSalto].x/100, (curva[cuentaSalto].y-50)/100);
-            taiyaki.translate(0, 1-curva[cuentaSalto].x/100, (curva[cuentaSalto].y-50)/100);
+			if(direccionSalto == 0) {
+				cubo.translate(0, 1-curva[cuentaSalto].x/100, (curva[cuentaSalto].y-50)/100);
+            	taiyaki.translate(0, 1-curva[cuentaSalto].x/100, (curva[cuentaSalto].y-50)/100);
+			} else if(direccionSalto == 1 | direccionSalto == -1) {
+				cubo.translate(0, Math.sin(Math.PI/curva.length*cuentaSalto)*2, direccionSalto*separacionPlanetas/2*(Math.cos(Math.PI/curva.length*cuentaSalto)-1));
+				taiyaki.translate(0, Math.sin(Math.PI/curva.length*cuentaSalto)*2, direccionSalto*separacionPlanetas/2*(Math.cos(Math.PI/curva.length*cuentaSalto)-1));
+				mat4.translate(mWorld, mWorld, [0, 0, direccionSalto*separacionPlanetas/curva.length]);
+			} else {
+				cubo.translate(direccionSalto/2*separacionPlanetas/2*(Math.cos(Math.PI/curva.length*cuentaSalto)-1), Math.sin(Math.PI/curva.length*cuentaSalto)*2, 0);
+				taiyaki.translate(direccionSalto/2*separacionPlanetas/2*(Math.cos(Math.PI/curva.length*cuentaSalto)-1), Math.sin(Math.PI/curva.length*cuentaSalto)*2, 0);
+				mat4.translate(mWorld, mWorld, [direccionSalto/2*separacionPlanetas/curva.length, 0, 0]);
+			}
         }
 
+		taiyaki.translate(Math.floor(posicionJugador/Math.sqrt(gameSize))*separacionPlanetas, 0, -posicionJugador%Math.sqrt(gameSize)*separacionPlanetas);
         taiyaki.paint(gl);
+		taiyaki.translate(-Math.floor(posicionJugador/Math.sqrt(gameSize))*separacionPlanetas, 0, posicionJugador%Math.sqrt(gameSize)*separacionPlanetas);
 
 		cubo.translate(Math.floor(posicionJugador/Math.sqrt(gameSize))*separacionPlanetas, 0, -posicionJugador%Math.sqrt(gameSize)*separacionPlanetas);
 		cubo.paint(gl);
 		cubo.translate(-Math.floor(posicionJugador/Math.sqrt(gameSize))*separacionPlanetas, 0, posicionJugador%Math.sqrt(gameSize)*separacionPlanetas);
 
         if(salto == true) {
-            cubo.translate(0, -1+curva[cuentaSalto].x/100, -(curva[cuentaSalto].y-50)/100);
-            taiyaki.translate(0, -1+curva[cuentaSalto].x/100, -(curva[cuentaSalto].y-50)/100);
+			if(direccionSalto == 0) {
+				cubo.translate(0, -1+curva[cuentaSalto].x/100, -(curva[cuentaSalto].y-50)/100);
+				taiyaki.translate(0, -1+curva[cuentaSalto].x/100, -(curva[cuentaSalto].y-50)/100);
+			} else if(direccionSalto == 1 | direccionSalto == -1) {
+				cubo.translate(0, -Math.sin(Math.PI/curva.length*cuentaSalto)*2, -direccionSalto*(Math.cos(Math.PI/curva.length*cuentaSalto)*separacionPlanetas/2-separacionPlanetas/2));
+				taiyaki.translate(0, -Math.sin(Math.PI/curva.length*cuentaSalto)*2, -direccionSalto*(Math.cos(Math.PI/curva.length*cuentaSalto)*separacionPlanetas/2-separacionPlanetas/2))
+			} else {
+				cubo.translate(-direccionSalto/2*separacionPlanetas/2*(Math.cos(Math.PI/curva.length*cuentaSalto)-1), -Math.sin(Math.PI/curva.length*cuentaSalto)*2, 0);
+				taiyaki.translate(-direccionSalto/2*separacionPlanetas/2*(Math.cos(Math.PI/curva.length*cuentaSalto)-1), -Math.sin(Math.PI/curva.length*cuentaSalto)*2, 0);
+			}
             if(cuentaSalto >= curva.length -1) {
-                caida = true;
-                cuentaSalto = 0;
                 salto = false;
+				if(direccionSalto == 1 | direccionSalto == -1) {
+					if((direccionSalto == 1 && Math.floor(posicionJugador/Math.sqrt(gameSize)) == Math.sqrt(gameSize)-1)
+					| (direccionSalto == -1 && Math.floor(posicionJugador/Math.sqrt(gameSize)) == 0)) {
+						posicionJugador = -1;
+					} else {
+						posicionJugador += 1*direccionSalto;
+					}
+				} else if (direccionSalto == 2 | direccionSalto == -2) {
+					if((direccionSalto == -2 && posicionJugador % Math.sqrt(gameSize) == Math.sqrt(gameSize)-1)
+					| (direccionSalto == 2 && posicionJugador % Math.sqrt(gameSize) == 0)) {
+						posicionJugador = -1;
+					} else {
+						posicionJugador -= Math.sqrt(gameSize)*direccionSalto/2;
+					}
+				}
+                cuentaSalto = 0;
             }
         }
 
@@ -318,6 +353,16 @@ async function main() {
 				}
 			}
 		});
+		
+		//mat4.translate(mWorld, mWorld, [Math.floor(posicionJugador/Math.sqrt(gameSize)), 0, -posicionJugador%Math.sqrt(gameSize)])
+		
+		if(posicionJugador < 0 | posicionJugador >= planetas.length | planetas[posicionJugador] == null) {
+			alert("Te moristeh :c");
+			generatePlanets();
+		} else if(posicionJugador == posicionVictoria) {
+			alert("¡Felicidades, le entregaste el taiyaki a tu novia!")
+			generatePlanets();
+		}
         
         gl.uniformMatrix4fv(mWorldLoc, false, mWorld);
 
