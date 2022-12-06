@@ -141,6 +141,9 @@ async function main() {
     const cielo = new Cube(generateCubeTexture(0.1, 0.602, 0.439, 0.945), new Array(48).fill(0), false);
     cielo.scale(100, 100, 100);
 	cielo.translate(25, 0, -20);
+	const cieloDeAmor = new Cube(generateCubeTexture(0.1, 0.602, 0.439, 0.945), generateCubeTexture(0.162, 0.29, 0.162, 0.29), false);
+	cieloDeAmor.scale(105, 105, 105);
+	cieloDeAmor.translate(26, 0, -21);
 
     const sun = new Sphere(generateSphereTexture(0.462, 0.52, 0.822, 0.801), new Array(sphereTextureSize).fill(1), sphereQuality, true);
     sun.scale(2, 2, 2);
@@ -172,6 +175,7 @@ async function main() {
 	
 	var cameraAngle = 0;
 	var cameraTranslation = [0, 0, 0];
+	var poderDelAmor = false;
 
 	// Función para generar los planetas. También sirve para reinciarlos.
 	function generatePlanets() {
@@ -185,10 +189,16 @@ async function main() {
 		var planetProbability = 0;
 		for(let i = 1; i < planetas.length; i++) {
 			planetProbability = Math.random();
-			if(planetProbability >= 0.4) planetas[i] = modelosPlanetas[Math.floor(Math.random()*1.5)];
+			if(planetProbability >= 0.5) planetas[i] = modelosPlanetas[Math.floor(Math.random()*1.5)];
 		}
 		while(planetas[posicionVictoria] == null) {
 			posicionVictoria = Math.floor(Math.random()*(planetas.length-1)) + 1
+		}
+		if(poderDelAmor) {
+			poderDelAmor = false;
+			cieloDeAmor.translate(-25, 0, 20);
+			cieloDeAmor.scale(1.11111, 1.11111, 1.11111);
+			cieloDeAmor.translate(26, 0, -21);
 		}
 	}
 
@@ -261,6 +271,21 @@ async function main() {
 			if(!salto) {
 				direccionSalto = 2;
 				salto = true;
+			}
+		} else if(event.key == "m") {
+			if(!poderDelAmor) {
+				poderDelAmor = true;
+				cieloDeAmor.translate(-26, 0, 21);
+				cieloDeAmor.scale(0.9, 0.9, 0.9);
+				cieloDeAmor.translate(25, 0, -20);
+
+				alert("Tienes el poder del amor, eres (casi) invencible :D")
+			} else {
+				poderDelAmor = false;
+				cieloDeAmor.translate(-25, 0, 20);
+				cieloDeAmor.scale(1.11111, 1.11111, 1.11111);
+				cieloDeAmor.translate(26, 0, -21);
+				alert("Ya no tienes el poder del amor, ten cuidado D:")
 			}
 		}
     });
@@ -337,6 +362,7 @@ async function main() {
         }
 
         cielo.paint(gl);
+		cieloDeAmor.paint(gl);
 
         sun.paint(gl);
 
@@ -356,10 +382,13 @@ async function main() {
 		});
 		
 		//mat4.translate(mWorld, mWorld, [Math.floor(posicionJugador/Math.sqrt(gameSize)), 0, -posicionJugador%Math.sqrt(gameSize)])
-		
 		if(posicionJugador < 0 | posicionJugador >= planetas.length | planetas[posicionJugador] == null) {
-			alert("Te moristeh :c");
-			generatePlanets();
+			if(posicionJugador < 0 | posicionJugador >= planetas.length | !poderDelAmor) {
+				alert("Te caistej :c");
+				generatePlanets();
+			} else {
+
+			}
 		} else if(posicionJugador == posicionVictoria) {
 			alert("¡Felicidades, le entregaste el taiyaki a tu novia!")
 			generatePlanets();
